@@ -1,0 +1,26 @@
+version: '3'
+services:
+  elasticsearch:
+    image: elasticsearch:7.13.3
+    container_name: elasticsearch
+    privileged: true
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx1096m" # 設置使用jvm內存大小
+    volumes:
+      - ./es/plugins:/usr/share/elasticsearch/plugins
+      - ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./es/data:/usr/share/elasticsearch/data:rw # 數據文件掛載
+      - ./es/logs:/usr/share/elasticsearch/logs:rw
+    ports:
+      - 9200:9200
+      - 9300:9300
+  kibana:
+    image: kibana:7.13.3
+    container_name: kibana
+    depends_on:
+      - elasticsearch # kibana在elasticsearch啟動之後再啟動
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200 # 設置訪問elasticsearch的地址
+      I18N_LOCALE: zh-CN
+    ports:
+      - 5601:5601

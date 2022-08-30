@@ -1,0 +1,18 @@
+# 節點名稱
+node.name: es01
+
+# 設置集群名稱
+cluster.name: test-cluster
+# 發現種子節點
+discovery.seed_hosts:
+  - es02
+  - es03
+# 集群初始化
+cluster.initial_master_nodes:
+  - es01
+  - es02
+  - es03
+bootstrap.memory_lock: true
+network.host: 0.0.0.0
+http.cors.enabled: true
+http.cors.allow-origin: "*"
