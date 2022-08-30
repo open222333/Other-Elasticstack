@@ -1,7 +1,7 @@
 version: '3'
 services:
   elasticsearch:
-    image: elasticsearch:7.13.3
+    image: elasticsearch:${STACK_VERSION}
     container_name: elasticsearch
     privileged: true
     environment:
@@ -13,9 +13,9 @@ services:
       - ./es/logs:/usr/share/elasticsearch/logs:rw
     ports:
       - 9200:9200
-      - 9300:9300
+      # - 9300:9300
   kibana:
-    image: kibana:7.13.3
+    image: kibana:${STACK_VERSION}
     container_name: kibana
     depends_on:
       - elasticsearch # kibana在elasticsearch啟動之後再啟動
