@@ -3,3 +3,4 @@ logs/
 plugins/
 .env
 config.toml
+*test*
