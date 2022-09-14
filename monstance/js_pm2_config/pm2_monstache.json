@@ -1,0 +1,9 @@
+{
+  "apps" : [{
+    "name"        : "monstache",
+    "script"      : "/root/go/bin/monstache",
+    "watch"       : true,
+    "cwd"         : "/path",
+    "args"        : "-f /path/config.toml"
+  }]
+}

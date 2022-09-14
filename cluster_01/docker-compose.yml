@@ -2,7 +2,7 @@ version: '3'
 services:
   es01:
     image: elasticsearch:${STACK_VERSION}
-    container_name: es01
+    container_name: ${ES_CONTAINER_NAME_1}
     environment:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
@@ -14,7 +14,7 @@ services:
       - 9200:9200
   es02:
     image: elasticsearch:${STACK_VERSION}
-    container_name: es02
+    container_name: ${ES_CONTAINER_NAME_2}
     environment:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
@@ -26,7 +26,7 @@ services:
       - es01
   es03:
     image: elasticsearch:${STACK_VERSION}
-    container_name: es03
+    container_name: ${ES_CONTAINER_NAME_3}
     environment:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
