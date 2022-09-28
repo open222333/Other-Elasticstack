@@ -20,6 +20,9 @@ direct-read-namespaces = [""]
 # change-stream-namespaces = ["mydb.mycollection", "db.collection", "test.test"]
 change-stream-namespaces = [""]
 
+# 排除 不建立索引
+direct-read-dynamic-exclude-regex = ".*(m3u8|log|temp|test).*"
+
 # additional settings
 
 # if you don't want to listen for changes to all collections in MongoDB but only a few
@@ -87,3 +90,13 @@ elasticsearch-password = "somepassword"
 [[mapping]]
 namespace = "db.collection"
 index = "sample.test"
+
+# 此腳本為 替換namespace的db為前綴
+[[script]]
+script="""
+module.exports = function (doc, ns) {
+  var index = "test_prefix." + ns.split(".")[1];
+  doc._meta_monstache = { index: index };
+  return doc;
+}
+"""
