@@ -1,0 +1,13 @@
+{
+  "apps" : [{
+    "name"        : "ssh_jp-avnight-mongo-secondary",
+    "script"      : "/usr/bin/ssh",
+    "watch"       : true,
+    "args"        : "user@host -L 127.0.0.1:51110:192.168.155.30:27017"
+  },{
+    "name"        : "ssh_jp-jjkk-mongo-secondary",
+    "script"      : "/usr/bin/ssh",
+    "watch"       : true,
+    "args"        : "user@host -L 127.0.0.1:51111:192.168.147.132:27017"
+  }]
+}

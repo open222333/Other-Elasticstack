@@ -4,6 +4,6 @@
     "script"      : "/root/go/bin/monstache",
     "watch"       : true,
     "cwd"         : "/path",
-    "args"        : "-f /path/config.toml"
+    "args"        : "-f /path/to/monstache/{name}_config.toml"
   }]
 }
