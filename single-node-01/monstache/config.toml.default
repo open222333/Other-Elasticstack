@@ -83,7 +83,8 @@ exit-after-direct-reads = false
 # index = ""
 
 # 排除
-direct-read-dynamic-exclude-regex = "(dbname1|dbname2).*(m3_u8|m3u8|account|.*log.*).*"
+# direct-read-dynamic-exclude-regex = "(dbname1|dbname2).*(m3_u8|m3u8|account|.*log.*).*"
+direct-read-dynamic-exclude-regex = "(dbname1|dbname2)\\..*|.*\\.(m3_u8|m3u8|account|.*log.*)"
 
 [[script]]
 script="""
