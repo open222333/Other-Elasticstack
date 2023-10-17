@@ -6,6 +6,9 @@ services:
     privileged: true
     environment:
       - "ES_JAVA_OPTS=-Xms512m -Xmx1096m" # 設置使用jvm內存大小
+      - "ES_HEAP_SIZE=512m"
+      - "MAX_OPEN_FILES=65535"
+      - "MAX_LOCKED_MEMORY=unlimited"
     volumes:
       - ./es/plugins:/usr/share/elasticsearch/plugins
       - ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
@@ -13,7 +16,6 @@ services:
       - ./es/logs:/usr/share/elasticsearch/logs:rw
     ports:
       - 9200:9200
-      # - 9300:9300
   kibana:
     image: kibana:${STACK_VERSION}
     container_name: kibana

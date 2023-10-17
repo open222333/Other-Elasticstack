@@ -50,6 +50,38 @@ curl http://localhost:9200
 # 使用方法
 
 ```bash
+# 建立 /usr/local/elasticsearch
+# 複製
+cp -r single-node-01/ /usr/share/elasticsearch
+
+# 將es內的 data/ logs/ 權限開至最大
+# 啟動
+docker-compose up -d
+
+docker exec -ti elasticsearch bash
+
+# 安裝ik分詞器 elasticsearch的版本和ik分詞器的版本需要保持一致
+# Elasticsearch中預設的標準分詞器(analyze)對中文分詞不是很友好 因此需下載ik分詞器
+# https://github.com/medcl/elasticsearch-analysis-ik/releases
+cd /usr/share/elasticsearch/plugins
+elasticsearch-plugin install https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.13.3/elasticsearch-analysis-ik-7.13.3.zip
+
+docker-compose restart elasticsearch
+
+# 創建mapping (可以在後台用模板)
+curl -XPOST http://localhost:9200/index/_mapping?pretty -H 'Content-Type:application/json' -d'
+{
+	"properties": {
+		"content": {
+			"type": "text",
+			"analyzer": "ik_max_word",
+			"search_analyzer": "ik_smart"
+		}
+	}
+}'
+```
+
+```bash
 # 安裝 pm2
 nvm install 16.16.0
 
