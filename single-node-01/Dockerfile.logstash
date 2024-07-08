@@ -1,0 +1,4 @@
+FROM logstash:${STACK_VERSION}
+
+# 安裝 JDBC 插件
+RUN bin/logstash-plugin install logstash-input-jdbc

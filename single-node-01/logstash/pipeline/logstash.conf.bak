@@ -1,0 +1,59 @@
+input {
+  jdbc {
+    jdbc_driver_library => "/usr/share/logstash/jdbc_drivers/mysql-connector-java-8.0.23.jar"
+    jdbc_connection_string => "jdbc:mysql://localhost:3306/your_database"
+    jdbc_user => "your_username"
+    jdbc_password => "your_password"
+    jdbc_driver_class => "com.mysql.jdbc.Driver"
+    schedule => "*/5 * * * *" # 每5分鐘執行一次查詢
+    statement => "SELECT * FROM table1"
+    type => "table1"
+  }
+
+  jdbc {
+    jdbc_driver_library => "/usr/share/logstash/jdbc_drivers/mysql-connector-java-8.0.23.jar"
+    jdbc_connection_string => "jdbc:mysql://localhost:3306/your_database"
+    jdbc_user => "your_username"
+    jdbc_password => "your_password"
+    jdbc_driver_class => "com.mysql.jdbc.Driver"
+    schedule => "0 */12 * * *" # 每12小時執行一次查詢
+    statement => "SELECT * FROM table2"
+    type => "table2"
+  }
+}
+
+filter {
+  if [type] == "table1" {
+    mutate {
+      add_field => { "table" => "table1" }
+    }
+  }
+
+  if [type] == "table2" {
+    mutate {
+      add_field => { "table" => "table2" }
+    }
+  }
+}
+
+output {
+  if [type] == "table1" {
+    elasticsearch {
+      hosts => ["localhost:9200"]
+      index => "prefix_table1-%{+YYYY.MM.dd}" # 按日期分割索引
+      document_id => "%{id}" # 假設每個表都有一個唯一的 id 欄位
+    }
+  }
+
+  if [type] == "table2" {
+    elasticsearch {
+      hosts => ["localhost:9200"]
+      index => "prefix_table2-%{+YYYY.MM.dd}" # 按日期分割索引
+      document_id => "%{id}" # 假設每個表都有一個唯一的 id 欄位
+    }
+  }
+
+  stdout {
+    codec => rubydebug
+  }
+}
