@@ -16,8 +16,8 @@ parser.add_argument('-j', '--json', default=None)
 parser.add_argument('-l', '--log_level', default='DEBUG')
 args = parser.parse_args()
 
-conf = ConfigParser(args.config)
-conf.read()
+conf = ConfigParser()
+conf.read(args.config)
 
 logger = logging.getLogger('Elastic 測試')
 logger.setLevel(args.log_level)
@@ -34,7 +34,7 @@ if args.json != None and os.path.exists(args.json):
     with open(args.json, 'r') as f:
         query = json.loads(f.read())
     logger.info(f'查詢條件: {query}')
-    result = es.set_query(query)
+    result = es.query(query)
     logger.info(f'{pformat(result)}')
 else:
     if args.json == None:
@@ -43,5 +43,5 @@ else:
         logger.info(f'{args.json} 不存在')
 
     logger.info(f'查詢條件: {args.query}')
-    result = es.set_query(args.query)
+    result = es.query(args.query)
     logger.info(f'{pformat(result)}')
