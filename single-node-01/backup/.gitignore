@@ -1,0 +1,4 @@
+*.sql
+*.txt
+!sample.sql
+!sample.txt

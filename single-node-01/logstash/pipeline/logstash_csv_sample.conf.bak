@@ -1,0 +1,33 @@
+input {
+  file {
+    path => "/path/to/your/post.txt"
+    start_position => "beginning"
+    sincedb_path => "/dev/null"
+    codec => plain {
+      charset => "UTF-8"
+    }
+  }
+}
+
+filter {
+  csv {
+    separator => ","
+    columns => ["id"]
+    quote_char => '"'
+  }
+
+  mutate {
+    convert => {
+      "id" => "integer"
+    }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["localhost:9200"]
+    index => "your_index_name"
+    document_id => "%{id}"
+  }
+  stdout { codec => rubydebug }
+}
