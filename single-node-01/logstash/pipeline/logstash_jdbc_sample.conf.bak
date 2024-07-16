@@ -47,7 +47,7 @@ output {
 
   if [type] == "table2" {
     elasticsearch {
-      hosts => ["localhost:9200"]
+      hosts => ["elasticsearch:9200"]
       index => "prefix_table2-%{+YYYY.MM.dd}" # 按日期分割索引
       document_id => "%{id}" # 假設每個表都有一個唯一的 id 欄位
     }

@@ -1,0 +1,58 @@
+input {
+  file {
+    path => "/usr/mysql_backup/csv/sample.txt"
+    start_position => "beginning"
+    sincedb_path => "/dev/null"
+    codec => plain {
+      charset => "UTF-8"
+    }
+  }
+}
+
+filter {
+  csv {
+    separator => ","
+    columns => ["id", "post_id", "count", "title", "text", "post_at", "can_online", "create_at", "update_at", "tags"]
+    quote_char => '"'
+  }
+
+  mutate {
+    convert => {
+      "id" => "integer"
+      "post_id" => "integer"
+      "count" => "integer"
+      "can_online" => "boolean"
+      "score" => "float"
+    }
+  }
+
+  if [tags] {
+    mutate {
+      split => { "tags" => "," }
+    }
+  }
+
+  date {
+    match => ["post_at", "yyyy-MM-dd HH:mm:ss"]
+    target => "post_at"
+  }
+
+  date {
+    match => ["create_at", "yyyy-MM-dd HH:mm:ss"]
+    target => "create_at"
+  }
+
+  date {
+    match => ["update_at", "yyyy-MM-dd HH:mm:ss"]
+    target => "update_at"
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["elasticsearch:9200"]
+    index => "post_20240715"
+    document_id => "%{id}"
+  }
+  stdout { codec => rubydebug }
+}

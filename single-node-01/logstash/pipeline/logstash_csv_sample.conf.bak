@@ -25,7 +25,7 @@ filter {
 
 output {
   elasticsearch {
-    hosts => ["localhost:9200"]
+    hosts => ["elasticsearch:9200"]
     index => "your_index_name"
     document_id => "%{id}"
   }
