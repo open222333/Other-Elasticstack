@@ -44,4 +44,4 @@ services:
       - 5044:5044 # 預設 Logstash 的 Beats input port
     environment:
       - "XPACK_MONITORING_ELASTICSEARCH_HOSTS=http://elasticsearch:9200" # 設置監控地址
-    command: logstash -f /usr/share/logstash/pipeline/${LOGSTASH_CONF_PATH} # 設置 Logstash 配置文件
+    command: logstash -f /usr/share/logstash/pipeline/pip install elasticsearch${LOGSTASH_CONF_PATH} # 設置 Logstash 配置文件
