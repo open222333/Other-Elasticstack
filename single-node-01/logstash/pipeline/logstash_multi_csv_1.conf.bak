@@ -1,0 +1,72 @@
+input {
+  file {
+    path => "/path/to/csv_files/*.csv"
+    start_position => "beginning"
+    sincedb_path => "/dev/null"
+    codec => plain {
+      charset => "UTF-8"
+    }
+    add_field => { "[@metadata][source_file]" => "%{path}" }
+  }
+}
+
+filter {
+  # 提取文件名並去除路徑和擴展名，用於動態設置索引名稱
+  mutate {
+    gsub => [
+      "[@metadata][source_file]", "/path/to/csv_files/", "",
+      "[@metadata][source_file]", ".csv", ""
+    ]
+  }
+
+  # 分別處理不同的文件
+  if [@metadata][source_file] == "file1" {
+    csv {
+      separator => ","
+      columns => ["field1", "field2", "field3"]  # file1.csv 的欄位名稱
+      quote_char => '"'
+    }
+    mutate {
+      convert => {
+        "field1" => "integer"
+        "field2" => "boolean"
+        "field3" => "string"
+      }
+    }
+  } else if [@metadata][source_file] == "file2" {
+    csv {
+      separator => ","
+      columns => ["col1", "col2", "col3"]  # file2.csv 的欄位名稱
+      quote_char => '"'
+    }
+    mutate {
+      convert => {
+        "col1" => "string"
+        "col2" => "float"
+        "col3" => "integer"
+      }
+    }
+  } else if [@metadata][source_file] == "file3" {
+    csv {
+      separator => ","
+      columns => ["columnA", "columnB", "columnC"]  # file3.csv 的欄位名稱
+      quote_char => '"'
+    }
+    mutate {
+      convert => {
+        "columnA" => "string"
+        "columnB" => "boolean"
+        "columnC" => "date"
+      }
+    }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["localhost:9200"]
+    index => "index_%{[@metadata][source_file]}"
+    document_id => "%{id}"  # 假設所有文件都有 "id" 欄位
+  }
+  stdout { codec => rubydebug }
+}
