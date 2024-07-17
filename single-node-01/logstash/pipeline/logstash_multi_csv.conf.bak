@@ -1,0 +1,67 @@
+input {
+  file {
+    path => "/path/to/csv_files/*.csv"
+    start_position => "beginning"
+    sincedb_path => "/dev/null"
+    codec => plain {
+      charset => "UTF-8"
+    }
+    # 使用 file 部分來提取文件名作為索引名稱的一部分
+    add_field => { "[@metadata][source_file]" => "%{path}" }
+  }
+}
+
+filter {
+  csv {
+    separator => ","
+    columns => ["id", "post_id", "bloger_id", "media_count", "title", "text", "text_cn", "photo_ready", "videos_ready", "cover_photo_id", "post_at", "can_online", "create_at", "update_at"]
+    quote_char => '"'
+  }
+
+  mutate {
+    convert => {
+      "id" => "integer"
+      "post_id" => "integer"
+      "bloger_id" => "integer"
+      "media_count" => "integer"
+      "photo_ready" => "boolean"
+      "videos_ready" => "boolean"
+      "can_online" => "boolean"
+      "score" => "float"
+      "tags" => "array"
+    }
+  }
+
+  date {
+    match => ["post_at", "yyyy-MM-dd HH:mm:ss"]
+    target => "post_at"
+  }
+
+  date {
+    match => ["create_at", "yyyy-MM-dd HH:mm:ss"]
+    target => "create_at"
+  }
+
+  date {
+    match => ["update_at", "yyyy-MM-dd HH:mm:ss"]
+    target => "update_at"
+  }
+
+  # 提取文件名並去除路徑和擴展名，用於動態設置索引名稱
+  mutate {
+    gsub => [
+      "[@metadata][source_file]", "/path/to/csv_files/", "",
+      "[@metadata][source_file]", ".csv", ""
+    ]
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["localhost:9200"]
+    # 使用文件名作為索引名稱的一部分
+    index => "onlyfans.post_%{[@metadata][source_file]}"
+    document_id => "%{id}"
+  }
+  stdout { codec => rubydebug }
+}
