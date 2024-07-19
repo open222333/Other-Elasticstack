@@ -2,6 +2,7 @@
   "databases": [
     {
       "host": "host1",
+      "port": 3306,
       "user": "user1",
       "password": "password1",
       "database": "database1",

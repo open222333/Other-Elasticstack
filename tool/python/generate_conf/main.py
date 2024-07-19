@@ -14,14 +14,15 @@ with open(config_file, 'r') as file:
 
 all_configs = ""
 for db_config in config_data["databases"]:
-    host = db_config["host"]
-    user = db_config["user"]
-    password = db_config["password"]
-    database = db_config["database"]
-    tables = db_config["tables"]
+    host = db_config.get("host")
+    port = int(db_config.get("port", 3306))
+    user = db_config.get("user")
+    password = db_config.get("password")
+    database = db_config.get("database")
+    tables = db_config.get("tables")
 
     for table_name in tables:
-        structure = get_table_structure(host, user, password, database, table_name)
+        structure = get_table_structure(host, user, password, database, table_name, port)
         logstash_config = generate_logstash_config(structure, table_name)
         all_configs += logstash_config + "\n"
 
