@@ -46,7 +46,7 @@ def generate_logstash_config(structure, table_name):
     input_config = f"""
 input {{
   file {{
-    path => "/path/to/csv_files/{table_name}.csv"
+    path => "/path/to/csv_files/{table_name}.txt"
     start_position => "beginning"
     sincedb_path => "/dev/null"
     codec => plain {{
@@ -62,7 +62,7 @@ filter {{
   mutate {{
     gsub => [
       "[@metadata][source_file]", "/path/to/csv_files/", "",
-      "[@metadata][source_file]", ".csv", ""
+      "[@metadata][source_file]", ".txt", ""
     ]
   }}
 

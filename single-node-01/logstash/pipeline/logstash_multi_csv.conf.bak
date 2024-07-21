@@ -1,6 +1,6 @@
 input {
   file {
-    path => "/path/to/csv_files/*.csv"
+    path => "/path/to/csv_files/*.txt"
     start_position => "beginning"
     sincedb_path => "/dev/null"
     codec => plain {
@@ -51,7 +51,7 @@ filter {
   mutate {
     gsub => [
       "[@metadata][source_file]", "/path/to/csv_files/", "",
-      "[@metadata][source_file]", ".csv", ""
+      "[@metadata][source_file]", ".txt", ""
     ]
   }
 }
