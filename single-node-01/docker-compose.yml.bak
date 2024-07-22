@@ -5,6 +5,7 @@ services:
     container_name: elasticsearch
     privileged: true
     environment:
+      # - "ES_JAVA_OPTS=-Xms16g -Xmx16g" # 設置使用jvm內存大小
       - "ES_JAVA_OPTS=-Xms512m -Xmx1096m" # 設置使用jvm內存大小
       - "ES_HEAP_SIZE=512m"
       - "MAX_OPEN_FILES=65535"
