@@ -34,7 +34,7 @@ if args.mode == "all_csv":
             logstash_config = generate_logstash_all_csv_config(structure, table_name)
             all_configs += logstash_config + "\n"
 
-    with open('output.conf', 'w') as f:
+    with open('all_csv.conf', 'w') as f:
         f.write(all_configs)
 elif args.mode == "csv":
     for db_config in config_data["databases"]:
@@ -63,16 +63,18 @@ elif args.mode == "jdbc":
 
         jdbc_url = f"jdbc:mysql://{host}:{port}/{database}"
 
+        structures = {}
         for table_name in tables:
             structure = get_table_structure(host, user, password, database, table_name, port)
-            logstash_config = generate_logstash_all_jdbc_config(
-                structure,
-                jdbc_url,
-                user,
-                password,
-                elastic_host=args.elastichost
-            )
-            all_configs += logstash_config + "\n"
+            structures[table_name] = structure
 
-    with open('output.conf', 'w') as f:
-        f.write(all_configs)
+        logstash_config = generate_logstash_all_jdbc_config(
+            structures,
+            jdbc_url,
+            user,
+            password,
+            elastic_host=args.elastichost
+        )
+
+    with open('jdbc.conf', 'w') as f:
+        f.write(logstash_config)

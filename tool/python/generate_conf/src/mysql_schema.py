@@ -77,7 +77,9 @@ filter {{
       convert => {{
 """
 
-    for column in structure:
+    total = len(structure)
+    for index in range(total):
+        column = structure[index]
         field_name = column[0]
         field_type = column[1]
 
@@ -92,7 +94,10 @@ filter {{
         else:
             logstash_type = "string"
 
-        filter_config += f'        "{field_name}" => "{logstash_type}",\n'
+        if index == total - 1:
+            filter_config += f'      "{field_name}" => "{logstash_type}"'
+        else:
+            filter_config += f'      "{field_name}" => "{logstash_type}"\n'
 
     filter_config += """
       }
@@ -176,7 +181,9 @@ filter {
       convert => {{
 """
 
-        for column in structure:
+        total = len(structure)
+        for index in range(total):
+            column = structure[index]
             field_name = column[0]
             field_type = column[1]
 
@@ -191,15 +198,15 @@ filter {
             else:
                 logstash_type = "string"
 
-            filter_config += f'        "{field_name}" => "{logstash_type}"\n'
+            if index == total - 1:
+                filter_config += f'      "{field_name}" => "{logstash_type}"'
+            else:
+                filter_config += f'      "{field_name}" => "{logstash_type}"\n'
 
         filter_config += """
       }
     }
   }
-"""
-    filter_config += """
-}
 """
 
     output_config = f"""
@@ -257,7 +264,9 @@ filter {{
 """
 
     # 添加 convert 配置
-    for column in structure:
+    total = len(structure)
+    for index in range(total):
+        column = structure[index]
         field_name = column[0]
         field_type = column[1]
 
@@ -272,7 +281,10 @@ filter {{
         else:
             logstash_type = "string"
 
-        filter_config += f'      "{field_name}" => "{logstash_type}",\n'
+        if index == total - 1:
+            filter_config += f'      "{field_name}" => "{logstash_type}"'
+        else:
+            filter_config += f'      "{field_name}" => "{logstash_type}"\n'
 
     filter_config += """
     }
