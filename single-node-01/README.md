@@ -62,6 +62,8 @@ scp -r "$CSV_USER@$CSV_HOST:/var/lib/mysql-files" ./backup/csv
 
 ## 前置準備
 
+參照 logstash/sample 內的 設定檔範本 建立到 logstash/pipeline
+
 使用腳本自動化生成 SSH 密鑰對並配置 SSH 連接
 
 ```bash
