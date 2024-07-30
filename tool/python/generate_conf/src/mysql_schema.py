@@ -121,7 +121,7 @@ output {{
     return logstash_config
 
 
-def generate_logstash_all_jdbc_config(structures, jdbc_url, jdbc_user, jdbc_password, elastic_host="localhost", jar_path="/usr/share/logstash/jdbc_drivers/mysql-connector-java-8.0.23.jar"):
+def generate_logstash_all_jdbc_config(structures, jdbc_url, jdbc_user, jdbc_password, elastic_host="localhost", jar_path="/usr/share/logstash/jdbc_drivers/mysql-connector-java-8.0.23.jar", index_name="\"index_%{[@metadata][table]}\""):
     """
     生成 Logstash JDBC 插件配置文件
 
@@ -152,9 +152,7 @@ def generate_logstash_all_jdbc_config(structures, jdbc_url, jdbc_user, jdbc_pass
     Returns:
         str: 生成的 Logstash 配置文件內容。
     """
-    input_config = """
-input {
-"""
+    input_config = "input {\n"
     for table_name, structure in structures.items():
         input_config += f"""
   jdbc {{
@@ -167,26 +165,16 @@ input {
     add_field => {{ "[@metadata][table]" => "{table_name}" }}
   }}
 """
-    input_config += """
-}
-"""
+    input_config += "}\n"
 
-    filter_config = """
-filter {
-"""
+    filter_config = "filter {\n"
     for table_name, structure in structures.items():
         filter_config += f"""
   if [@metadata][table] == "{table_name}" {{
     mutate {{
       convert => {{
 """
-
-        total = len(structure)
-        for index in range(total):
-            column = structure[index]
-            field_name = column[0]
-            field_type = column[1]
-
+        for field_name, field_type in structure:
             if "int" in field_type:
                 logstash_type = "integer"
             elif "char" in field_type or "text" in field_type:
@@ -198,22 +186,23 @@ filter {
             else:
                 logstash_type = "string"
 
-            if index == total - 1:
-                filter_config += f'      "{field_name}" => "{logstash_type}"'
-            else:
-                filter_config += f'      "{field_name}" => "{logstash_type}"\n'
+            filter_config += f'        "{field_name}" => "{logstash_type}",\n'
+
+        # Removing the trailing comma from the last field
+        filter_config = filter_config.rstrip(',\n') + '\n'
 
         filter_config += """
       }
     }
   }
 """
+    filter_config += "}\n"
 
     output_config = f"""
 output {{
   elasticsearch {{
     hosts => ["http://{elastic_host}:9200"]
-    index => "index_%{{[@metadata][table]}}"
+    index => {index_name}
     document_id => "%{{id}}"
   }}
   stdout {{ codec => rubydebug }}
