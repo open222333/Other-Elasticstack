@@ -1,0 +1,255 @@
+input {
+  file {
+    path => "/usr/mysql_backup/csv/mysql-files/ff_player.txt"
+    start_position => "beginning"
+    sincedb_path => "/dev/null"
+    codec => plain {
+      charset => "UTF-8"
+    }
+    add_field => { "[@metadata][source_file]" => "%{path}" }
+  }
+}
+
+filter {
+  mutate {
+    gsub => [
+      "[@metadata][source_file]", "/usr/mysql_backup/csv/mysql-files/", "",
+      "[@metadata][source_file]", ".txt", ""
+    ]
+  }
+
+  if [@metadata][source_file] == "ff_player" {
+    csv {
+      separator => ","
+      columns => ["player_id", "player_name_zh", "player_name_en", "player_info", "player_order", "player_status", "player_copyright", "player_jiexi"]
+      quote_char => '"'
+    }
+    mutate {
+      convert => {
+        "player_id" => "integer"
+        "player_name_zh" => "string"
+        "player_name_en" => "string"
+        "player_info" => "string"
+        "player_order" => "integer"
+        "player_status" => "integer"
+        "player_copyright" => "integer"
+        "player_jiexi" => "string"
+      }
+    }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["http://elasticsearch:9200"]
+    index => "ff_player"
+    document_id => "%{player_id}"
+  }
+  stdout { codec => rubydebug }
+}
+
+
+input {
+  file {
+    path => "/usr/mysql_backup/csv/mysql-files/ff_tag.txt"
+    start_position => "beginning"
+    sincedb_path => "/dev/null"
+    codec => plain {
+      charset => "UTF-8"
+    }
+    add_field => { "[@metadata][source_file]" => "%{path}" }
+  }
+}
+
+filter {
+  mutate {
+    gsub => [
+      "[@metadata][source_file]", "/usr/mysql_backup/csv/mysql-files/", "",
+      "[@metadata][source_file]", ".txt", ""
+    ]
+  }
+
+  if [@metadata][source_file] == "ff_tag" {
+    csv {
+      separator => ","
+      columns => ["tag_id", "tag_cid", "tag_name", "tag_list", "tag_ename"]
+      quote_char => '"'
+    }
+    mutate {
+      convert => {
+        "tag_id" => "integer"
+        "tag_cid" => "integer"
+        "tag_name" => "string"
+        "tag_list" => "string"
+        "tag_ename" => "string"
+      }
+    }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["http://elasticsearch:9200"]
+    index => "ff_tag"
+    document_id => "%{tag_id}"
+  }
+  stdout { codec => rubydebug }
+}
+
+
+input {
+  file {
+    path => "/usr/mysql_backup/csv/mysql-files/ff_vod.txt"
+    start_position => "beginning"
+    sincedb_path => "/dev/null"
+    codec => plain {
+      charset => "UTF-8"
+    }
+    add_field => { "[@metadata][source_file]" => "%{path}" }
+  }
+}
+
+filter {
+  mutate {
+    gsub => [
+      "[@metadata][source_file]", "/usr/mysql_backup/csv/mysql-files/", "",
+      "[@metadata][source_file]", ".txt", ""
+    ]
+  }
+
+  if [@metadata][source_file] == "ff_vod" {
+    csv {
+      separator => ","
+      columns => ["vod_id", "vod_cid", "vod_recommend", "vod_name", "vod_ename", "vod_title", "vod_keywords", "vod_type", "vod_color", "vod_actor", "vod_director", "vod_content", "vod_pic", "vod_pic_bg", "vod_pic_slide", "vod_area", "vod_language", "vod_year", "vod_continu", "vod_total", "vod_isend", "vod_addtime", "vod_updatetime", "vod_filmtime", "vod_hits", "vod_hits_day", "vod_hits_week", "vod_hits_month", "vod_hits_lasttime", "vod_stars", "vod_status", "vod_up", "vod_down", "vod_ispay", "vod_price", "vod_trysee", "vod_play", "vod_server", "vod_url", "vod_inputer", "vod_reurl", "vod_jumpurl", "vod_letter", "vod_skin", "vod_gold", "vod_golder", "vod_length", "vod_weekday", "vod_series", "vod_copyright", "vod_state", "vod_version", "vod_tv", "vod_douban_id", "vod_douban_score", "vod_scenario", "vod_lines", "vod_watch", "vod_ending", "vod_writer", "vod_producer", "vod_camera", "vod_editor", "vod_music", "vod_art", "vod_extend"]
+      quote_char => '"'
+    }
+    mutate {
+      convert => {
+        "vod_id" => "integer"
+        "vod_cid" => "integer"
+        "vod_recommend" => "integer"
+        "vod_name" => "string"
+        "vod_ename" => "string"
+        "vod_title" => "string"
+        "vod_keywords" => "string"
+        "vod_type" => "string"
+        "vod_color" => "string"
+        "vod_actor" => "string"
+        "vod_director" => "string"
+        "vod_content" => "string"
+        "vod_pic" => "string"
+        "vod_pic_bg" => "string"
+        "vod_pic_slide" => "string"
+        "vod_area" => "string"
+        "vod_language" => "string"
+        "vod_year" => "integer"
+        "vod_continu" => "string"
+        "vod_total" => "integer"
+        "vod_isend" => "integer"
+        "vod_addtime" => "integer"
+        "vod_updatetime" => "integer"
+        "vod_filmtime" => "integer"
+        "vod_hits" => "integer"
+        "vod_hits_day" => "integer"
+        "vod_hits_week" => "integer"
+        "vod_hits_month" => "integer"
+        "vod_hits_lasttime" => "integer"
+        "vod_stars" => "integer"
+        "vod_status" => "integer"
+        "vod_up" => "integer"
+        "vod_down" => "integer"
+        "vod_ispay" => "integer"
+        "vod_price" => "integer"
+        "vod_trysee" => "integer"
+        "vod_play" => "string"
+        "vod_server" => "string"
+        "vod_url" => "string"
+        "vod_inputer" => "string"
+        "vod_reurl" => "string"
+        "vod_jumpurl" => "string"
+        "vod_letter" => "string"
+        "vod_skin" => "string"
+        "vod_gold" => "float"
+        "vod_golder" => "integer"
+        "vod_length" => "integer"
+        "vod_weekday" => "string"
+        "vod_series" => "string"
+        "vod_copyright" => "integer"
+        "vod_state" => "string"
+        "vod_version" => "string"
+        "vod_tv" => "string"
+        "vod_douban_id" => "integer"
+        "vod_douban_score" => "float"
+        "vod_scenario" => "string"
+        "vod_lines" => "string"
+        "vod_watch" => "string"
+        "vod_ending" => "string"
+        "vod_writer" => "string"
+        "vod_producer" => "string"
+        "vod_camera" => "string"
+        "vod_editor" => "string"
+        "vod_music" => "string"
+        "vod_art" => "string"
+        "vod_extend" => "string"
+      }
+    }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["http://elasticsearch:9200"]
+    index => "ff_vod"
+    document_id => "%{vod_id}"
+  }
+  stdout { codec => rubydebug }
+}
+
+
+input {
+  file {
+    path => "/usr/mysql_backup/csv/mysql-files/ff_cj.txt"
+    start_position => "beginning"
+    sincedb_path => "/dev/null"
+    codec => plain {
+      charset => "UTF-8"
+    }
+    add_field => { "[@metadata][source_file]" => "%{path}" }
+  }
+}
+
+filter {
+  mutate {
+    gsub => [
+      "[@metadata][source_file]", "/usr/mysql_backup/csv/mysql-files/", "",
+      "[@metadata][source_file]", ".txt", ""
+    ]
+  }
+
+  if [@metadata][source_file] == "ff_cj" {
+    csv {
+      separator => ","
+      columns => ["cj_id", "cj_name", "cj_url", "cj_type", "cj_appid", "cj_appkey"]
+      quote_char => '"'
+    }
+    mutate {
+      convert => {
+        "cj_id" => "integer"
+        "cj_name" => "string"
+        "cj_url" => "string"
+        "cj_type" => "integer"
+        "cj_appid" => "string"
+        "cj_appkey" => "string"
+      }
+    }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["http://elasticsearch:9200"]
+    index => "ff_cj"
+    document_id => "%{cj_id}"
+  }
+  stdout { codec => rubydebug }
+}
