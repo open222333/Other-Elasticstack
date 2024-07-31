@@ -174,7 +174,8 @@ def generate_logstash_all_jdbc_config(structures, jdbc_url, jdbc_user, jdbc_pass
     mutate {{
       convert => {{
 """
-        for field_name, field_type in structure:
+        # print(structure)
+        for field_name, field_type, _, _, _, _ in structure:
             if "int" in field_type:
                 logstash_type = "integer"
             elif "char" in field_type or "text" in field_type:
@@ -186,7 +187,7 @@ def generate_logstash_all_jdbc_config(structures, jdbc_url, jdbc_user, jdbc_pass
             else:
                 logstash_type = "string"
 
-            filter_config += f'        "{field_name}" => "{logstash_type}",\n'
+            filter_config += f'        "{field_name}" => "{logstash_type}"\n'
 
         # Removing the trailing comma from the last field
         filter_config = filter_config.rstrip(',\n') + '\n'
