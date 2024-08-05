@@ -20,7 +20,7 @@ wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-$MYSQL
 tar -xzf mysql-connector-java-$MYSQL_CONNECTOR_VERSION.tar.gz
 
 # 移動 JAR 文件
-mv mysql-connector-java-$MYSQL_CONNECTOR_VERSION/mysql-connector-java-$MYSQL_CONNECTOR_VERSION.jar ./jdbc_drivers/
+mv mysql-connector-java-$MYSQL_CONNECTOR_VERSION/mysql-connector-java-$MYSQL_CONNECTOR_VERSION.jar $MYSQL_CONNECTOR_PATH
 
 # 刪除下載的壓縮檔
 rm mysql-connector-java-$MYSQL_CONNECTOR_VERSION.tar.gz

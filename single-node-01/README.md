@@ -438,3 +438,35 @@ vim .env
 ```bash
 ./backup_and_restart_logstash.sh
 ```
+
+# mysql jdbc 插件連線 mysql 建立索引
+
+## 前置準備
+
+參照 logstash/sample 內的 設定檔範本 建立到 logstash/pipeline
+
+使用腳本自動化生成 SSH 密鑰對並配置 SSH 連接
+
+```bash
+chmod +x setup_ssh.sh
+```
+
+```bash
+./setup_ssh.sh 主機名 主機IP
+```
+
+```bash
+chmod +x download_mysql_connector.sh
+```
+
+```bash
+./download_mysql_connector.sh
+```
+
+## 執行
+
+重啟 Logstash
+
+```bash
+docker-compose restart logstash
+```
