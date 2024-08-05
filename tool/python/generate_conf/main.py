@@ -36,6 +36,7 @@ if args.mode == "all_csv":
 
     with open('all_csv.conf', 'w') as f:
         f.write(all_configs)
+        
 elif args.mode == "csv":
     for db_config in config_data["databases"]:
         host = db_config.get("host")
@@ -51,6 +52,7 @@ elif args.mode == "csv":
 
             with open(f'{table_name}.conf', 'w') as f:
                 f.write(logstash_config)
+
 elif args.mode == "jdbc":
     all_configs = ""
     for db_config in config_data["databases"]:

@@ -39,7 +39,7 @@ services:
       - elasticsearch # logstash在elasticsearch啟動之後再啟動
     volumes:
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro # 將 Logstash pipeline 配置文件掛載到容器中
-      - ./jdbc_drivers/mysql-connector-java-8.0.23.jar:/usr/share/logstash/jdbc_drivers/mysql-connector-java-8.0.23.jar:ro # 將 JDBC 驅動文件掛載到容器中
+      - ./jdbc_drivers/:/usr/share/logstash/jdbc_drivers/ # 將 JDBC 驅動文件放置位置掛載到容器中
       - ./backup/csv/mysql-files:/usr/mysql_backup/csv
     ports:
       - 5044:5044 # 預設 Logstash 的 Beats input port
