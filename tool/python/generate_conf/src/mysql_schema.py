@@ -121,7 +121,7 @@ output {{
     return logstash_config
 
 
-def generate_logstash_all_jdbc_config(structures, jdbc_url, jdbc_user, jdbc_password, elastic_host="localhost", jar_path="/usr/share/logstash/jdbc_drivers/mysql-connector-java-8.0.23.jar", index_name="\"index_%{[@metadata][table]}\""):
+def generate_logstash_all_jdbc_config(structures, jdbc_url, jdbc_user, jdbc_password, elastic_host="localhost", jar_path="/usr/share/logstash/jdbc_drivers", jar_name="mysql-connector-java-8.0.23.jar",index_name="\"index_%{[@metadata][table]}\""):
     """
     生成 Logstash JDBC 插件配置文件
 
@@ -152,12 +152,16 @@ def generate_logstash_all_jdbc_config(structures, jdbc_url, jdbc_user, jdbc_pass
     Returns:
         str: 生成的 Logstash 配置文件內容。
     """
+    # jdbc_driver_class = "com.mysql.jdbc.Driver"
+    jdbc_driver_class = "com.mysql.cj.jdbc.Driver"
+
+
     input_config = "input {\n"
     for table_name, structure in structures.items():
         input_config += f"""
   jdbc {{
-    jdbc_driver_library => "{jar_path}"
-    jdbc_driver_class => "com.mysql.jdbc.Driver"
+    jdbc_driver_library => "{jar_path}/{jar_name}"
+    jdbc_driver_class => "{jdbc_driver_class}"
     jdbc_connection_string => "{jdbc_url}"
     jdbc_user => "{jdbc_user}"
     jdbc_password => "{jdbc_password}"
