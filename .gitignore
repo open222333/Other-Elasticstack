@@ -1,5 +1,4 @@
 data/
-logs/
 plugins/
 .env
 config.toml

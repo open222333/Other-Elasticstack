@@ -155,6 +155,7 @@ def generate_logstash_all_jdbc_config(structures, jdbc_url, jdbc_user, jdbc_pass
         jdbc_driver_class (str): jdbc_driver_class 參數, 預設 com.mysql.cj.jdbc.Driver
         jdbc_paging_enabled => true
         jdbc_page_size (int): jdbc_page_size 參數, 每次查詢指定數量數據, 預設 關閉
+        output_stdout_codec (int): 輸出顯示方式, 可選 rubydebug json_lines, 預設 rubydebug
 
     Returns:
         str: 生成的 Logstash 配置文件內容。
@@ -165,8 +166,10 @@ def generate_logstash_all_jdbc_config(structures, jdbc_url, jdbc_user, jdbc_pass
     jar_path = kwargs.get('jar_path', '/usr/share/logstash/jdbc_drivers')
     jdbc_driver_class = kwargs.get('jdbc_driver_class', "com.mysql.cj.jdbc.Driver")
     jdbc_page_size = kwargs.get('jdbc_page_size', None)
+    output_stdout_codec = kwargs.get('output_stdout_codec', 'rubydebug')
 
-
+    if output_stdout_codec not in ['json_lines', 'rubydebug']:
+        output_stdout_codec = 'rubydebug'
 
     input_config = "input {\n"
     for table_name, structure in structures.items():
@@ -238,7 +241,7 @@ output {{
     index => {index_name}
     document_id => "%{{id}}"
   }}
-  stdout {{ codec => rubydebug }}
+  stdout {{ codec => {output_stdout_codec} }}
 }}
 """
 
